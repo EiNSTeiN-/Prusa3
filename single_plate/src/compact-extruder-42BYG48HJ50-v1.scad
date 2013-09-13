@@ -256,8 +256,8 @@ module extruder_idler_holes(bearing_indent){
   // Main cutout
   difference() {
     cube([10,23,25], center= true);
-    translate([3.7,0,4.1+2-bearing_indent]) rotate([0,90,0]) cylinder(r1=6, r2=8, h=1.3);
-    translate([-5,0,4.1+2-bearing_indent]) rotate([0,90,0]) cylinder(r1=8, r2=6, h=1.3);
+    translate([3.7,0,4.1+2-bearing_indent]) rotate([0,90,0]) cylinder(r1=6, r2=10, h=2.6);
+    translate([-6.3,0,4.1+2-bearing_indent]) rotate([0,90,0]) cylinder(r1=10, r2=6, h=2.6);
   }
   // Idler shaft
   translate([-8,0,4.1+2-bearing_indent]) rotate([0,90,0]) cylinder(r=4.1, h=16);
@@ -274,7 +274,7 @@ module extruder_idler_holes(bearing_indent){
   translate([0,48,11-8.4/2]) rotate([0,90,0]) bolt(25, 3.7);
   *translate([0,48,11-8.4/2]) rotate([0,90,0]) nut(6.5, 5);
 
-  hull() {
+  translate([-5,0,0]) hull() {
   	cube([30,16+2,4]);
   	translate([0,2.5+2,-4]) cube([30,16,4]);
   }
