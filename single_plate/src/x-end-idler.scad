@@ -23,13 +23,13 @@ module x_end_idler_base(){
 module x_end_idler_holes(){
  difference() {
    x_end_holes();
-   translate(v=[-5.5-(17/2)+(8/2)+1,-25-2,bearing_center]) rotate(a=[0,-90,0]) cylinder(r1=15/2, r2=12/2,h=1);
-   translate(v=[-5.5-17/2-8/2-1,-25-2,bearing_center]) rotate(a=[0,90,0]) cylinder(r1=15/2, r2=12/2,h=1);
+   translate(v=[-5.5-(17/2)+(8/2)+1+1,-25-2,bearing_center]) rotate(a=[0,-90,0]) cylinder(r1=15/2+1.5, r2=12/2,h=2);
+   translate(v=[-5.5-17/2-8/2-1-1,-25-2,bearing_center]) rotate(a=[0,90,0]) cylinder(r1=15/2+1.5, r2=12/2,h=2);
 }
 
  translate([-10,-21,11]) roundedcube([10,11,33], 4);
  translate([-25,-21,11]) roundedcube([10,27,33], 4);
- translate(v=[-5.5,-25-2,bearing_center]) rotate(a=[0,-90,0]) cylinder(h = 17, r=4.2, $fn=30);
+ translate(v=[-5.5+1,-25-2,bearing_center]) rotate(a=[0,-90,0]) cylinder(h = 19, r=4.2, $fn=30);
 }
 
 // Final part
