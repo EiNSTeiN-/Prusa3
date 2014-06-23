@@ -51,8 +51,8 @@ module y_idler_holes(){
    %translate([0,0,external_width/2-bearing_width/2]) cylinder(h = bearing_width, r=(22/2)+2*0.66);
 
    // The two bumps around the center of the bearing
-   translate([0,0,wall_thickness]) cylinder(r1=15/2, r2=12/2,h=opening_width/2-bearing_width/2);
-   translate([0,0,external_width-wall_thickness]) rotate([0,180,0]) cylinder(r1=15/2, r2=12/2,h=opening_width/2-bearing_width/2);
+   translate([0,0,wall_thickness-0.5]) cylinder(r1=15/2+0.5, r2=12/2,h=opening_width/2-bearing_width/2+0.5);
+   translate([0,0,external_width-wall_thickness+0.5]) rotate([0,180,0]) cylinder(r1=15/2+0.5, r2=12/2,h=opening_width/2-bearing_width/2+0.5);
  }
  translate([0,16+22+elongation+tensionner_length+2-10,external_width/2]) rotate([90,0,0]) {
 	nut(5.8,5);
