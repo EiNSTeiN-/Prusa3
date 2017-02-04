@@ -25,7 +25,7 @@ translate([0,0, 8+3]) rotate([0,180,0]) idler();
 	
 // printed rods for the 608zz bearings.
 for(i=[1,2]) {
-	translate([6,44+i*12-6,0]) cylinder(r=8/2,h=14);
+	translate([0,44+i*12-6,0]) cylinder(r=8/2,h=14);
 }
 
 ///-
@@ -59,10 +59,10 @@ module jhead_mount(second_extruder=false) {
 	union() {
       translate([4,54-2,0]) cube([top_d+8,top_h+groove_h+2,24]);
       hull() {
-        translate([2,54-5,14]) cube([top_d+12,top_h+groove_h+7,10]);
-        translate([2,54-2,10]) cube([top_d+12,top_h+groove_h+2,14]);
+        translate([0,54-5,14]) cube([top_d+12,top_h+groove_h+7,10]);
+        translate([0,54-2,10]) cube([top_d+12,top_h+groove_h+2,14]);
       }
-      translate([2,54-5,0]) cube([6,top_h+groove_h+5,23]);
+      translate([0,54-5,0]) cube([6,top_h+groove_h+5,23]);
      }
 	 translate([1.5+11+3.5,54,11]) rotate([-90,0,0]) cylinder(r=groove_d/2+0.5, h=top_h+groove_h+1);
 	 translate([1.5+11+3.5,54,11]) rotate([-90,0,0]) cylinder(r=top_d/2+0.5, h=top_h);
@@ -80,12 +80,12 @@ module jhead_mount(second_extruder=false) {
       }
 
       translate([40,61,18.5]) rotate([0,-90,0]) bolt(length=40, d=3.6);
-      translate([5.5,61,18.5]) rotate([0,-90,0]) cylinder(h=3.5, r=6/2);
+      #translate([5.5,61,18.5]) rotate([0,-90,0]) cylinder(h=6.5, r=6/2);
 
-	 translate([6,57,23-(36.5/2)]) rotate([0,-90,0]) union() {
-	   translate([0,0,-4]) cylinder(r=3.5/2,h=10);
+	 translate([4,57,23-(36.5/2)]) rotate([0,-90,0]) union() {
+	   hull() for(z=[0,3]) translate([z,0,0]) translate([0,0,-4]) cylinder(r=3.5/2,h=10, $fn=30);
 	   hull() {
-	     translate([1,0,0]) nut(5.8, 3);
+	     translate([1+3,0,0]) nut(5.8, 3);
 	     translate([-10,0,0]) nut(5.8, 3);
 	   }
 	 }
@@ -113,7 +113,7 @@ module extruder_holes(second_extruder=false) {
 		// Main shaft opening
 		difference() {
 			translate([5.5,0,-1]) cylinder(r=7.5, h=26);
-			if(second_extruder) translate([9,-8,5.2]) cube([10,22,0.3]);
+			if(second_extruder) #translate([9,-8,4-0.3]) cube([10,22,0.3]);
 		}
 		
 		// Idler bearing cutout
@@ -142,7 +142,6 @@ module extruder_holes(second_extruder=false) {
 			translate([x,49,0]) cylinder(r=10/2, h=25);
 		}
 	}
-	translate([19,48,6]) rotate([0,-90,45]) translate([0,0,2]) cylinder(r=6/2, h=4);
 
 	// Filament path
 	translate([25,65+4,11]) rotate([90,0,0]) cylinder(r=4/2, h=70);
@@ -155,13 +154,18 @@ module extruder_holes(second_extruder=false) {
 	}
 
     for(i=[0,36]) {
-	 translate([26,8+i,2]) rotate([0,0,180]) union() {
-	   translate([0,0,-7]) cylinder(r=3.5/2,h=10);
-	   hull() {
-	     translate([1,0,0]) nut(5.8, 3);
-	     translate([-3,0,0]) nut(5.8, 3);
-	   }
-	 }
+	 translate([26,8+i,2]) {
+	   rotate([0,0,180]) union() {
+          difference() {
+			translate([0,0,-7]) cylinder(r=3.5/2,h=9);
+			if(second_extruder == true) #translate([0,0,-0.3]) cylinder(r=3.5/2,h=0.3);
+          }
+	     hull() {
+	       translate([1,0,-0.2]) nut(5.8, 3);
+	       translate([-3,0,-0.2]) nut(5.8, 3);
+	     }
+        }
+       }
     }
 }
 
