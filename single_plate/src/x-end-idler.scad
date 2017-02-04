@@ -1,45 +1,42 @@
-// PRUSA iteration3
-// X end idler
-// GNU GPL v3
-// Josef Průša <iam@josefprusa.cz> and contributors
-// http://www.reprap.org/wiki/Prusa_Mendel
-// http://prusamendel.org
+include <x-end-base.scad>;
 
-include <../configuration.scad>
-use <inc/x-end.scad>
+x_carriage();
 
-bearing_center = 5+(x_rod_distance/2);
-
-module x_end_idler_base(){
- x_end_base();
-
-   // The fake bearing
-   %translate(v=[-5.5-(17/2)+(8/2),-25-2,bearing_center]) rotate(a=[0,-90,0]) cylinder(h = 8, r=(22/2)+2*0.66);
-
-   // The two bumps around the center of the bearing
-   translate([0,0,9+6]) rotate([0,180,0]) cylinder(r1=15/2, r2=12/2,h=1.5);
+module x_carriage()
+{
+  difference() {
+    union() {
+      x_base_body();
+      
+      // around bearing
+      *translate([-body_thickness, -rod_dia/2-bearing_outer_dia/2, height/2]) rotate([0, 90, 0]) cylinder(r=rod_dia/2+2, h=12);
+    }
+    union() {
+      x_base_holes();
+      
+      // side cutaway
+      hull() {
+          for(z=[height+10,rod_dia/2+12]) for(y=[10, (length-bearing_dia-5/2-rod_dia-5/2)+5]) {
+              translate([-body_thickness-1, -rod_dia/2-bearing_outer_dia/2-y, z]) rotate([0, 90, 0]) cylinder(r=rod_dia/2, h=30);
+          }
+      }
+      
+      // bearing rod hole
+      translate([-body_thickness-1, -rod_dia/2-bearing_outer_dia/2, height/2]) rotate([0, 90, 0]) cylinder(r=rod_dia/2, h=30);
+      
+      // bearing opening
+      *hull() for(y=[5, -30]) translate([-body_thickness+2, -rod_dia/2-bearing_outer_dia/2+y-7, height/2]) rotate([0, 90, 0]) cylinder(r=33/2, h=8);
+      // belt slot
+      translate([0, 15, 0]) hull() {
+          translate([-body_thickness+6, 2, 6+12]) rotate([90, 0, 0]) cylinder(r=rod_dia/2, h=length);
+          translate([-body_thickness+6, 2, height-6-12]) rotate([90, 0, 0]) cylinder(r=rod_dia/2, h=length);
+      }
+      
+      // fake bearing rod
+      %translate([-body_thickness-1, -rod_dia/2-bearing_outer_dia/2, height/2]) rotate([0, 90, 0]) cylinder(r=rod_dia/2, h=14);
+      
+      // fake bearing
+      %translate([-body_thickness+2, -rod_dia/2-bearing_outer_dia/2, height/2]) rotate([0, 90, 0]) cylinder(r=12/2, h=8);
+    }
+  }
 }
-
-module x_end_idler_holes(){
- difference() {
-   x_end_holes();
-   translate(v=[-5.5-(17/2)+(8/2)+1,-25-2,bearing_center]) rotate(a=[0,-90,0]) cylinder(r1=15/2, r2=12/2,h=1);
-   translate(v=[-5.5-17/2-8/2-1,-25-2,bearing_center]) rotate(a=[0,90,0]) cylinder(r1=15/2, r2=12/2,h=1);
-}
-
- translate([-10,-21,11]) roundedcube([10,11,33], 4);
- translate([-25,-21,11]) roundedcube([10,27,33], 4);
- translate(v=[-5.5,-25-2,bearing_center]) rotate(a=[0,-90,0]) cylinder(h = 17, r=4.2, $fn=30);
-}
-
-// Final part
-module x_end_idler(){
- mirror([0,1,0]) difference(){
-  x_end_idler_base();
-  x_end_idler_holes();
- }
-}
-
-x_end_idler();
-
-

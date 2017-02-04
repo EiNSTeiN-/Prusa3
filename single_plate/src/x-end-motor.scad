@@ -1,105 +1,126 @@
-// PRUSA iteration3
-// X end motor
-// GNU GPL v3
-// Josef Průša <iam@josefprusa.cz> and contributors
-// http://www.reprap.org/wiki/Prusa_Mendel
-// http://prusamendel.org
+include <x-end-base.scad>;
+use <inc/rrd-switch.scad>;
 
-include <../configuration.scad>
-use <inc/x-end.scad>
+motor_nut_spacing = 31;
+motor_nut_dia = 12;
+motor_nut_thickness = 6;
+motor_center_dia = 28;
 
-// increase this if the motor hits the electronics.
-// for example, when using an arduino, the motor may block the RAMPS reset button if this value is zero.
-motor_separation = 10;
+mirror([0, 1, 0]) x_motor();
 
-module x_end_motor_base(){
- x_end_base();
- translate(v=[-14,31+motor_separation/2,26.5-23/2]) cube(size = [17,44+motor_separation,30], center = true);
- translate(v=[-14,31-24/2+motor_separation/2,47/2]) cube(size = [17,20+motor_separation,47], center = true);
+%translate([-3, 34, -20.5])
+  rotate([0, -90, 0])
+  rrd_switch();
+%translate([-body_thickness+6, 60, 6]) rotate([90, 0, 0]) cylinder(r=rod_dia_clip/2, h=length);
+
+module motor_invertor(h=16)
+{
+  difference() {
+    cylinder(r=12/2, h=h);
+    translate([0, 0, -1]) cylinder(r=3.5/2, h=h+2);
+  }
 }
 
-module x_end_motor_holes(){
- x_end_holes();
+translate([20, 0, 0]) motor_invertor();
 
- translate([-40,-45,0]) cube([40,20,60]);
- translate([-10,-22,11]) roundedcube([10,12,33], 4);
- translate([-25,-22,11]) roundedcube([10,30,33], 4);
-
- // Position to place
- translate(v=[-0,32+motor_separation,21]){
-  *translate([-4,-0.5-motor_separation/2,11]) cube([20,44+motor_separation,44], center=true);
-  
-  hull() {
-    translate([-9, 14, -12]) cube([10,14,20], center=true);
-    translate([0, -15-motor_separation, -12]) cube([10,14,20], center=true);
-  }
-
-  hull() {
-    translate([-18,2.5,-3]) {
-      translate([1,0,0]) rotate([90,0,0]) cylinder(r=4/2, h=25+motor_separation, $fn=20);
-      translate([10,0,0]) rotate([90,0,0]) cylinder(r=4/2, h=25+motor_separation);
-      translate([1,0,14]) rotate([90,0,0]) cylinder(r=4/2, h=25+motor_separation, $fn=20);
-      translate([10,0,23]) rotate([90,0,0]) cylinder(r=4/2, h=25+motor_separation);
+module switch_holder()
+{
+  difference() {
+    union() {
+      cube([12, 30, 2]);
+      hull() translate([0, 27.5, 0]) {
+        spacing = 36-19;
+        translate([12/2-spacing/2, 0, 0])
+          cylinder(r=7/2, h=17);
+        translate([12/2+spacing/2, 0, 0])
+          cylinder(r=7/2, h=17);
+      }
+    }
+    union() {
+      translate([0, 27.5, -1]) {
+        spacing = 19;
+        translate([12/2-spacing/2, 0, 0])
+          cylinder(r=3.3/2, h=40);
+        translate([12/2+spacing/2, 0, 0])
+          cylinder(r=3.3/2, h=40);
+        
+        translate([12/2, -5, 9.25])
+          rotate([-90, 0, 0])
+          cylinder(r=8/2, h=10);
+        
+        translate([-14/2+12/2, -6, 9])
+          cube([14, 10, 20]);
+      }
     }
   }
-  translate(v=[-2,-10-motor_separation/2+6,7]) cube(size = [20,25+motor_separation,40], center = true);
-  translate(v=[-6,-(32+motor_separation)+15.5,7]) cylinder(r=12/2, h = 40, center=true, $fn=30);
-
-  // Motor mounting holes
-  translate([0,0,-21+(x_rod_distance/2)+5]) {
-  translate(v=[-10,-15.5,-15.5]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-  translate(v=[-10,-15.5,15.5]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-  translate(v=[-10,15.5,-15.5]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-  translate(v=[-10,-15.5,-15.5]) rotate([0,90,0]) cylinder(h=14, r=7/2, center=true);
-  translate(v=[-10,-15.5,15.5]) rotate([0,90,0]) cylinder(h=14, r=7/2, center=true);
-  translate(v=[-10,15.5,-15.5]) rotate([0,90,0]) cylinder(h=14, r=7/2, center=true);
-  }
-  translate([-10,-1,6]) hull() {
-	translate([0,-8,-8]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,30,-8]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,-8,30]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,30,30]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-  }
-  translate([-10,0,7]) hull() {
-	translate([0,14,-8]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,8,-14]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,-8,-14]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,-14,-8]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,-14,8]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,-8,14]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,8,14]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-	translate([0,14,8]) rotate([0,90,0]) cylinder(h=30, r=4.4/2, center=true);
-  }
- }
 }
 
-// Final part
-module x_end_motor(){
- difference(){
-  x_end_motor_base();
-  x_end_motor_holes();
- }
+translate([-50, 0, 0]) 
+  switch_holder();
 
- // side nut trap for Z endstop
- difference() {
-   translate([0,13,46]) {
-     difference() {
-       hull() {
-         cylinder(r=10/2, h=4, $fn=20);
-         translate([-10/2, -10/2, -8]) cube([10, 1, 12]);
-       }
+%translate([-22.5, 20, 12]) 
+  rotate([0, 90, 0])
+  switch_holder();
 
-       translate([0,0,-10]) cylinder(r=3.5/2, h=20, $fn=6);
-       translate([0,-1,0]) {
-         cylinder(r=6/2, h=3, $fn=6);
-         translate([-6/2, 0, 0]) cube([6, 10, 3]);
-       }
-       translate([-12/2, 4, -10/2]) cube([12, 6, 10]);
-     }
-   }
-
-   
- }
+module x_motor()
+{
+  motor_spacing = 5;
+  motor_plate_thickness = 3;
+  motor_height = motor_nut_spacing+motor_nut_dia+motor_plate_thickness+4;
+  
+  difference() {
+    union() {
+      x_base_body();
+      
+      // motor side
+      translate([-bearing_outer_dia/2, 0, 0]) cube([bearing_outer_dia/2, bearing_outer_dia/2, motor_height]);
+      
+      translate([-bearing_outer_dia/2+motor_nut_dia/2+6-0.1, 6+bearing_outer_dia/2-0.1, 0]) rotate([0, 0, 180]) corner(6, motor_height);
+      translate([-bearing_outer_dia/2-motor_nut_thickness+0.1, 6+bearing_outer_dia/2-0.1, 0]) rotate([0, 0, -90]) corner(6, motor_height);
+      translate([-bearing_outer_dia/2, bearing_outer_dia/2, 0]) cube([motor_nut_thickness, motor_spacing+motor_nut_dia/2, motor_height]);
+      
+      translate([-bearing_outer_dia/2, motor_nut_dia/2+bearing_outer_dia/2+motor_spacing, motor_nut_dia/2+motor_plate_thickness+4]) {
+        hull() for(z=[0, motor_nut_spacing]) translate([0, 0, z]) rotate([0, 90, 0]) cylinder(r=motor_nut_dia/2, h=motor_nut_thickness);
+        hull() for(y=[0, motor_nut_spacing]) translate([0, y, 0]) rotate([0, 90, 0]) cylinder(r=motor_nut_dia/2, h=motor_nut_thickness);
+      }
+      
+      translate([-bearing_outer_dia/2, bearing_outer_dia/2, 0]) cube([motor_nut_thickness, motor_spacing+motor_nut_dia+motor_nut_spacing, motor_plate_thickness+motor_nut_dia/2+4]);
+      translate([-bearing_outer_dia/2, 0, 0]) difference() {
+        cube([motor_nut_thickness+bearing_outer_dia/2, motor_spacing+motor_nut_dia+motor_nut_spacing+bearing_outer_dia/2, motor_plate_thickness]);
+        translate([motor_nut_thickness+bearing_outer_dia/2-10+0.1, motor_spacing+motor_nut_dia+motor_nut_spacing-10+0.1+bearing_outer_dia/2, -1]) corner(10, motor_plate_thickness+2);
+        
+        for(i=[0:2])
+        translate([11, 12+(i*14), -1])
+        cube([3, 10, motor_plate_thickness+2]);
+      }
+    }
+    union() {
+      x_base_holes();
+      
+      // belt slot
+      translate([0, 15, 0]) hull() {
+          translate([-body_thickness+6, 2, 6+12]) rotate([90, 0, 0]) cylinder(r=rod_dia/2, h=length);
+          translate([-body_thickness+6, 2, height-6-12]) rotate([90, 0, 0]) cylinder(r=rod_dia/2, h=length);
+      }
+      
+      // side cutaway
+      hull() {
+        for(z=[height+10,rod_dia/2+12]) for(y=[10, (length-bearing_dia-5/2-rod_dia-5/2)+5]) {
+          translate([-body_thickness-1, -rod_dia/2-bearing_outer_dia/2-y, z]) rotate([0, 90, 0]) cylinder(r=rod_dia/2, h=30);
+        }
+      }
+      
+      translate([-bearing_outer_dia/2-1, motor_nut_dia/2+bearing_outer_dia/2+motor_spacing, motor_nut_dia/2+motor_plate_thickness+4]) {
+        
+        translate([8, motor_nut_spacing/2, motor_nut_spacing/2]) 
+        rotate([0, -90, 0]) 
+        cylinder(r=motor_center_dia/2, h=motor_nut_thickness+2);
+        
+        translate([8, 0, 0]) rotate([0, -90, 0]) cylinder(r=screw_dia_small/2, h=20);
+        translate([8, 0, motor_nut_spacing]) rotate([0, -90, 0]) cylinder(r=screw_dia_small/2, h=20);
+        translate([8, motor_nut_spacing, 0]) rotate([0, -90, 0]) cylinder(r=screw_dia_small/2, h=20);
+        
+      }
+    }
+  }
 }
-
-x_end_motor();
